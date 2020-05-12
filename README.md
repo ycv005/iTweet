@@ -1,5 +1,5 @@
+# iTweet
 <h1 align="center"><img align="center" width="300" src="static/images/logo.png" alt="iTweet logo"></h1>
-
 
 ## 🚀 Features
 
