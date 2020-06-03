@@ -1,6 +1,6 @@
 from django.db import models
 from django.conf import settings
-
+import os
 
 def user_directory_path(instance, filename):
     base_name = os.path.basename(filename)
