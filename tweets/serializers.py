@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import Tweet, Image
 
 
-class  ImageSerializer(serializers.HyperlinkedModelSerializer):
+class ImageSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Image
         fields = ['image']
@@ -11,10 +11,11 @@ class  ImageSerializer(serializers.HyperlinkedModelSerializer):
 class TweetSerializer(serializers.HyperlinkedModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')
     images = ImageSerializer(source='image_set', many=True, read_only=True)
+    url = serializers.HyperlinkedIdentityField(view_name='tweet:tweet-detail')
 
     class Meta:
         model = Tweet
-        fields = ['id', 'user', 'context', 'images']
+        fields = ['id', 'url', 'user', 'context', 'images']
 
     def create(self, validated_data):
         images_data = self.context.get('view').request.FILES

@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from .models import Tweet
 from rest_framework import generics, permissions
-from .serializer import TweetSerializer
+from .serializers import TweetSerializer
 
 
 class TweetList(generics.ListCreateAPIView):
