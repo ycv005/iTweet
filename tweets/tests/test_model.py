@@ -14,10 +14,12 @@ def get_testuser_credential():
     }
     return credential
 
+
 def get_test_user():
     return get_user_model().objects.create_user(
         **get_testuser_credential()
     )
+
 
 def get_temporary_image(temp_file):
     size = (200, 200)
@@ -29,6 +31,7 @@ def get_temporary_image(temp_file):
 
 class TweetModelTestCase(TestCase):
     """Test module for Tweet model"""
+
     def setUp(self):
         """Set up data for each test method"""
         user = get_test_user()
@@ -71,6 +74,7 @@ class TweetModelTestCase(TestCase):
 
 class ImageModelTestCase(TestCase):
     """Test module for the Image model"""
+
     def setUp(self):
         self.tweet_obj = Tweet.objects.create(
             user=get_test_user(),

@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 import os
 
+
 def user_directory_path(instance, filename):
     base_name = os.path.basename(filename)
     name, ext = os.path.splitext(base_name)
@@ -16,7 +17,7 @@ class Tweet(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE
     )
-    context = models.TextField(null=True, blank=True)
+    context = models.TextField()
 
 
 class Image(models.Model):
