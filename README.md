@@ -1,4 +1,5 @@
 # iTweet
+
 <h1 align="center"><img align="center" width="300" src="static/images/logo.png" alt="iTweet logo"></h1>
 
 ## 🚀 Features
@@ -30,3 +31,5 @@ $ python manage.py runserver
 ## ⭐️ Show your support
 
 Give a ⭐️ if this project helped you!
+
+<!-- Video to start- 3:26:00 -->

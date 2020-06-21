@@ -24,3 +24,10 @@ class TweetSerializer(serializers.HyperlinkedModelSerializer):
             for image in images_data.values():
                 Image.objects.create(tweet=tweet, image=image)
         return tweet
+
+    def validate_content(self, context):
+        if len(context) > 241:
+            raise serializers.ValidationError("Tweet is more than 240\
+                                        character."
+                                              )
+        return context

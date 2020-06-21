@@ -17,7 +17,18 @@ class Tweet(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE
     )
-    context = models.TextField()
+    context = models.TextField(max_length=240)
+    likes = models.IntegerField(default=0)
+
+    class Meta:
+        ordering = ['-id']
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "context": self.context,
+            "like": self.likes
+        }
 
 
 class Image(models.Model):
