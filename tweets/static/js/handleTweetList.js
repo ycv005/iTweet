@@ -2,53 +2,77 @@ function tweetListLocation() {
   return document.getElementById("list-tweet");
 }
 
-function handleLikeEvent(id, like) {
-  console.log(id, like);
+function handleTweetAction(id, like, action) {
   const url = "tweets/action";
   const method = "POST";
-  const data = JSON.stringify({
+  var data = {
     id: id,
-    action: "like",
-  });
-  const xhr = XMLHttpRequest();
+    action: action,
+  };
+  data = JSON.stringify(data);
+  console.log("data to be send-", data);
+  const csrftoken = getCsrfCookie("csrftoken");
+  const xhr = new XMLHttpRequest();
+  xhr.open(method, url);
   xhr.setRequestHeader("Content-Type", "application/json");
   xhr.setRequestHeader("HTTP_X_REQUESTED_WITH", "XMLHttpRequest");
   xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-  // xhr.setRequestHeader("X-CSRFToken",` "HTTP_X_CSRFTOKEN");
-  xhr.open(method, url);
+  xhr.setRequestHeader("X-CSRFToken", csrftoken);
+
   xhr.onload = function () {
-    console.log(xhr.status, xhr.response);
+    // will handle later on with the react js
+    listTweet();
   };
   xhr.send(data);
 }
 
-function LikeBtn(tweet) {
+function ReTweetBtn(tweet) {
   return (
-    "<button onclick=handleLikeEvent(" +
+    '<button onclick="handleTweetAction(' +
     tweet.id +
     "," +
     tweet.likes +
-    ") type='button' class='btn btn-danger m-10'>" +
+    ", 'retweet')\" type='button' class='btn btn-outline-primary m-10'>Retweet</button>"
+  );
+}
+
+function LikeBtn(tweet) {
+  return (
+    '<button onclick="handleTweetAction(' +
     tweet.id +
-    "Like</button>"
+    "," +
+    tweet.likes +
+    ", 'like')\" type='button' class='btn btn-danger m-10'>" +
+    tweet.likes +
+    " Like</button>"
+  );
+}
+
+function UnLikeBtn(tweet) {
+  return (
+    '<button onclick="handleTweetAction(' +
+    tweet.id +
+    "," +
+    tweet.likes +
+    ", 'unlike')\" type='button' class='btn btn-outline-danger m-10'>Unlike</button>"
   );
 }
 
 function createTweet(tweet) {
-  console.log("here is teh tweet obj- ${tweet}");
   return (
     "<div class='row mb-5 border h-100'><p>" +
     tweet.context +
     "</p>" +
     "<div>" +
     LikeBtn(tweet) +
+    UnLikeBtn(tweet) +
+    ReTweetBtn(tweet) +
     "</div>" +
     "</div>"
   );
 }
 
 function listTweet() {
-  console.log("listing out tweet");
   var list_tweet = tweetListLocation();
   const xhr = new XMLHttpRequest();
   const method = "GET";

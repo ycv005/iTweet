@@ -1,7 +1,10 @@
 from django.shortcuts import redirect, reverse
 from .models import Tweet, Image
 from rest_framework import generics, permissions, status
-from .serializers import TweetSerializer
+from .serializers import (
+    TweetSerializer, TweetActionSerializer,
+    TweetReadSerializer
+)
 from .forms import TweetForm
 from django.utils.http import is_safe_url
 from django.conf import settings
@@ -40,8 +43,8 @@ def tweet_create_view(request):
 
 @api_view(['GET'])
 def tweet_list_view(request):
-    serializer = TweetSerializer(
-        data=Tweet.objects.all(), many=True, context={'request': request})
+    serializer = TweetReadSerializer(
+        Tweet.objects.all(), many=True, context={'request': request})
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -50,7 +53,7 @@ def tweet_list_view(request):
 def tweet_detail_view(request, pk, *args, **kwargs):
     try:
         obj = Tweet.objects.get(pk=pk)
-        serializer = TweetSerializer(obj, context={'request': request})
+        serializer = TweetReadSerializer(obj, context={'request': request})
         return Response(serializer.data, status=status.HTTP_200_OK)
     except Tweet.DoesNotExist:
         return Response(
@@ -59,18 +62,63 @@ def tweet_detail_view(request, pk, *args, **kwargs):
         )
 
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def tweet_action_view(request, *args, **kwargs):
+    """
+    handle tweet action like like, unlike, retweet
+    """
+    serializer = TweetActionSerializer(data=request.data)
+    if serializer.is_valid(raise_exception=True):
+        data = serializer.validated_data
+        pk = data.get('id')
+        action = data.get('action')
+        try:
+            obj = Tweet.objects.get(pk=pk)
+        except Tweet.DoesNotExist:
+            return Response(
+                {'message': 'Tweet not found'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        if action == 'like':
+            obj.likes.add(request.user)
+        elif action == 'unlike':
+            obj.likes.remove(request.user)
+        elif action == 'retweet':
+            context = data.get('context')
+            new_tweet = Tweet.objects.create(
+                user=request.user, retweet=obj,
+                context=context
+            )
+            serializer = TweetReadSerializer(
+                new_tweet, context={'request': request})
+            return Response(
+                serializer.data, status=status.HTTP_200_OK
+            )
+        return Response(
+            {'message': 'Tweet like modified'}, status=status.HTTP_200_OK
+        )
+
+# Custom permission class won't work on function based view
+
+
 @api_view(['DELETE'])
-@permission_classes([IsAuthenticated, IsOwner])
+@permission_classes([IsAuthenticated])
 def tweet_delete_view(request, pk, *args, **kwargs):
-    try:
-        obj = Tweet.objects.get(pk=pk)
-        obj.delete()
-        return Response({}, staus=status.HTTP_200_OK)
-    except Tweet.DoesNotExist:
+    obj = Tweet.objects.filter(pk=pk)
+    if not obj.exists():
         return Response(
             {'message': 'Tweet not found'},
             status=status.HTTP_404_NOT_FOUND
         )
+    obj = obj.filter(user=request.user)
+    if not obj.exists():
+        return Response(
+            {'message': 'Not authorizated'},
+            status=status.HTTP_403_FORBIDDEN
+        )
+    obj.delete()
+    return Response({'message': 'Tweet deleted'}, status=status.HTTP_200_OK)
 
 
 def tweet_create_view_pure_django(request):
