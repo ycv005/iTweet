@@ -36,12 +36,9 @@ class Tweet(models.Model):
     class Meta:
         ordering = ['-id']
 
-    def serialize(self):
-        return {
-            "id": self.id,
-            "context": self.context,
-            "like": self.likes
-        }
+    @property
+    def is_retweet(self):
+        return self.retweet != None
 
 
 class Image(models.Model):

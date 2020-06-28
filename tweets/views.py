@@ -16,7 +16,7 @@ from .permissions import IsOwner
 
 class TweetList(generics.ListCreateAPIView):
     queryset = Tweet.objects.all()
-    serializer_class = TweetSerializer
+    serializer_class = TweetReadSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def perform_create(self, serializer):

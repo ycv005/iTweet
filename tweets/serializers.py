@@ -60,14 +60,12 @@ class TweetReadSerializer(serializers.HyperlinkedModelSerializer):
     images = ImageSerializer(source='image_set', many=True, read_only=True)
     url = serializers.HyperlinkedIdentityField(view_name='tweet:tweet-detail')
     likes = serializers.SerializerMethodField(read_only=True)
-    context = serializers.SerializerMethodField(read_only=True)
+    parent_tweet = TweetSerializer(read_only=True, source='retweet')
 
     class Meta:
         model = Tweet
-        fields = ['id', 'url', 'user', 'context', 'images', 'likes']
+        fields = ['id', 'url', 'user', 'context',
+                  'images', 'likes', 'is_retweet', 'parent_tweet']
 
     def get_likes(self, obj):
         return obj.likes.count()
-
-    def get_context(self, obj):
-        return obj.context
