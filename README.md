@@ -32,4 +32,4 @@ $ python manage.py runserver
 
 Give a ⭐️ if this project helped you!
 
-<!-- Video to start- 4:36:00 -->
+<!-- Video to start- 5:26:00 -->
