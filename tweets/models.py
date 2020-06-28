@@ -13,11 +13,32 @@ def user_directory_path(instance, filename):
             )
 
 
+class TweetLike(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE
+    )
+    tweet = models.ForeignKey("Tweet", on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+
 class Tweet(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE
     )
-    context = models.TextField()
+    context = models.TextField(max_length=240, blank=True, null=True)
+    likes = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, related_name='my_like_tweet', blank=True,
+        through=TweetLike
+    )
+    timestamp = models.DateTimeField(auto_now_add=True)
+    retweet = models.ForeignKey('self', null=True, on_delete=models.SET_NULL)
+
+    class Meta:
+        ordering = ['-id']
+
+    @property
+    def is_retweet(self):
+        return self.retweet != None
 
 
 class Image(models.Model):
