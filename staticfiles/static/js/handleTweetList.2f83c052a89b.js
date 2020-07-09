@@ -4,7 +4,7 @@ function tweetListLocation() {
 
 function handleLikeEvent(id, like) {
   console.log(id, like);
-  const url = "tweets/action";
+  const url = "api/tweets/action";
   const method = "POST";
   const data = JSON.stringify({
     id: id,
@@ -52,7 +52,7 @@ function listTweet() {
   var list_tweet = tweetListLocation();
   const xhr = new XMLHttpRequest();
   const method = "GET";
-  const url = "/tweets/list";
+  const url = "api/tweets/list";
   const responseType = "json";
   xhr.responseType = responseType;
   xhr.open(method, url);

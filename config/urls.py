@@ -9,7 +9,7 @@ urlpatterns = [
     path('accounts/', include('allauth.urls')),
     path('', include('pages.urls')),
     path('api-auth/', include('rest_framework.urls')),
-    path('tweets/', include('tweets.urls')),
+    path('api/tweets/', include('tweets.urls')),
 ]
 
 if settings.DEBUG:

@@ -26,10 +26,14 @@ $ python manage.py createsuperuser
 $ python manage.py runserver
 
 # Load the site at http://127.0.0.1:8000
+
+# Start react server
+$ cd react-app
+$ npm start
 ```
 
 ## ⭐️ Show your support
 
 Give a ⭐️ if this project helped you!
 
-<!-- Video to start- 5:26:00 -->
+<!-- Video to start- 6:03:00 -->
