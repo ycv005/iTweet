@@ -36,4 +36,4 @@ $ npm start
 
 Give a ⭐️ if this project helped you!
 
-<!-- Video to start- 6:03:00 -->
+<!-- Video to start- 6:19:00 -->
