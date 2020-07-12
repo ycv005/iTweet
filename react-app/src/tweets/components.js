@@ -1,19 +1,26 @@
 import React, { useEffect, useState } from "react";
-import { listTweet } from "../lookup/index.js";
+import { createTweet, listTweet } from "../lookup/index.js";
 
 export function TweetComponent(props) {
+  console.log("here is the tweet componenet");
   const [newTweets, setNewTweets] = useState([]);
   const textAreaRef = React.createRef();
   var tempTweet;
   const handleSubmit = (event) => {
+    console.log("handing submit tweet");
     event.preventDefault();
     const newVal = textAreaRef.current.value;
     tempTweet = [...newTweets];
-    tempTweet.unshift({
-      context: newVal,
-      likes: 0,
-      id: 2323,
-    });
+    createTweet(newVal, (response, status) => {
+      if (status === 201) {
+        console.log(`${status} in the create tweeet`);
+        tempTweet.unshift(response);
+      }
+      else {
+        alert("Error occured while posting tweet");
+        console.log(response);
+      }
+    })
     setNewTweets(tempTweet);
     textAreaRef.current.value = "";
   };
@@ -39,8 +46,10 @@ export function TweetComponent(props) {
 }
 
 export function TweetsList(props) {
+  console.log("calling tweet list")
   const [tweetsInit, setTweetsInit] = useState([]);
   const [tweets, setTweets] = useState([]);
+  const [tweetsDidSet, setTweetsDidSet] = useState(false);
   useEffect(() => {
     const final = [...props.newTweets].concat(tweetsInit);
     if (final.length !== tweets.length) {
@@ -48,16 +57,19 @@ export function TweetsList(props) {
     }
   }, [props.newTweets, tweets, tweetsInit]);
   useEffect(() => {
-    const myCallback = (response, status) => {
-      if (status === 200) {
-        setTweetsInit(response);
-      } else {
-        console.log("possibly you didn't start the django server");
-        alert("There was an error, ok-", status);
-      }
-    };
-    listTweet(myCallback);
-  }, []);
+    if (tweetsDidSet === false) {
+      const myCallback = (response, status) => {
+        if (status === 200) {
+          setTweetsInit(response);
+          setTweetsDidSet(true);
+        } else {
+          console.log("possibly you didn't start the server");
+          alert("There was an error, ok-", status);
+        }
+      };
+      listTweet(myCallback);
+    }
+  }, [setTweetsInit, tweetsDidSet, setTweetsDidSet]);
   return tweets.map((tweet, index) => {
     return (
       <Tweet
@@ -71,7 +83,6 @@ export function TweetsList(props) {
 
 export function ActionBtn(props) {
   const { tweet, action } = props;
-  // TODO: tweet.userLike is undefined
   const [likes, setLikes] = useState(tweet.likes);
   const [justClicked, setJustClicked] = useState(
     tweet.userLike === true ? true : false

@@ -33,6 +33,7 @@ class TweetDetails(generics.RetrieveUpdateDestroyAPIView):
 @permission_classes([IsAuthenticated])
 def tweet_create_view(request):
     # need to send back serialized data that js could use
+    print("creating tweet here")
     serializer = TweetSerializer(
         data=request.POST, context={'request': request})
     if serializer.is_valid(raise_exception=True):
