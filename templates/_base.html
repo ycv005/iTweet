@@ -15,13 +15,15 @@
 </head>
 
 <body>
+  <noscript>You need to enable JavaScript to run this app.</noscript>
   {% include 'pages/navbar.html' %}
 
   <div class="container">
     {% block content %} {% endblock content %}
   </div>
 
-  {% include 'pages/footer.html' %} {% include '_base_js.html' %}
+  {% include 'pages/footer.html' %}
+  {% include '_base_js.html' %}
 </body>
 
 </html>

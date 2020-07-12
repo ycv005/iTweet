@@ -1,3 +1,3 @@
-import { listTweet } from "./components";
+import { createTweet, listTweet } from "./components";
 
-export { listTweet };
+export { listTweet, createTweet };
